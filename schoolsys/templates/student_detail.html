@@ -1,0 +1,33 @@
+{% extends 'adminbase.html' %}
+{%block content%}
+
+{%for students, fees in student%}
+
+<section id="students" class="section-spacing">
+  <div class="student-details-header">
+    <h2> Details About: {{students.first_name}} {{students.second_name}}</h2>
+  </div>
+  
+  <div class="container-card">
+    <div class="student-card">
+      <div class="card-content">
+      <h5 class="text-center">{{students.first_name}}  {{students.second_name}}</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"> <b>Admission Number:</b> {{students.id}}</li>
+        <li class="list-group-item"><b>Fee Paid:</b> {{students.fee_paid}}</li>
+        <li class="list-group-item"><b>Fee Amount:</b> {{fees.fee_total}}</li>
+        <li class="list-group-item"><b>Balance:</b> {{fees.fee_total - students.fee_paid}}</li>
+      </ul>
+
+      <div class="d-flex justify-content-around mb-3 mt-3">
+            
+        <a href=" {{url_for('home')}}" class="card-link"><button class="btn btn-primary"> Go Back</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+</section>
+{%endfor%}
+
+{%endblock content%}

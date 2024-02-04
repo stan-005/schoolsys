@@ -1,0 +1,109 @@
+{% extends 'adminbase.html' %}
+
+
+
+{% block content %}
+
+<head>
+
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: left;
+    }
+
+    .row {
+      margin: 50px;
+    }
+
+    .panel{
+      border: none;
+    }
+    .panel p{
+      font-family: sans-serif;
+    }
+    .panel-title{
+      font-family: sans-serif;
+      font-weight: 600;
+    }
+    .table-heading{
+      padding-right: 5px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between
+    }
+   
+    .table-heading input{
+      height: 100%;
+      border-radius: 6px;
+    }
+    .narrow-cell {
+    width: 250px;
+  }
+
+  </style>
+
+</head>
+
+
+<div class="container-table">
+  <div class="row">
+    <div class="panel panel-primary">
+      <div class="table-heading">
+        <h6 class="panel-title">Students</h6>
+        <form action="" id="searchForm">
+          {{form.hidden_tag()}}
+          {{form.query(type='text', id='query', placeholder='Search by name...')}}
+        
+      </form>
+      </div>
+
+      <div class="input-heading">
+        <p>Manage your students and their data</p>
+      </div>
+      
+        <table class="table table-hover table-striped table-bordered" id="dev-table">
+        <thead>
+
+          <tr>
+            <th>First Name</th>
+            <th>Second Name</th>
+            <th>Fee_Paid</th>
+            <th> Action</th>
+          </tr>
+        </thead>
+        {% for student in students %}
+        <tr>
+          <td> {{student.first_name}}</td>
+          <td>{{student.second_name}}</td>
+          <td>{{student.fee_paid}}</td>
+          <td class="narrow-cell">
+            <a href="{{url_for('student_detail', student_id=student.id)}}"><button type="submit" class="btn btn-info">View</button></a>
+            <a href=""><button type="submit" class="btn btn-danger">Delete</button></a>
+            <a href=" {{url_for('update_student', student_id=student.id)}}"><button type="submit" class="btn btn-success">Update</button></a>
+          </td>
+        </tr>
+
+        {% endfor %}
+      </table>
+    </div>
+
+
+  </div>
+</div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+        // Clear the input value to ensure placeholder text is visible
+        document.getElementById('search').value = '';
+    });
+</script>
+
+{% endblock content %}

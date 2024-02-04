@@ -1,0 +1,103 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+
+<head>
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('#searchForm').submit(function(event) {
+            event.preventDefault();
+            var query = $('#query').val().trim();
+            $.ajax({
+                type: 'POST',
+                url: '/search',
+                contentType: 'application/json',
+                data: JSON.stringify({ query: query }),
+                success: function(response) {
+                    $('#resultsTable tbody').empty();
+                    $.each(response, function(index, student) {
+                        var row = $('<tr>').appendTo('#resultsTable tbody');
+                        $('<td>').text(student.first_name).appendTo(row);
+                        $('<td>').text(student.second_name).appendTo(row);
+                        $('<td>').text(student.fee_paid).appendTo(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+
+</head>
+
+
+
+<!------ signup page for student by admin(sumit)  ---------->
+<section class="container-add-student forms">
+
+  <!---REGISTER FORM-->
+  <div class="form add-student">
+        <h4 class="add-header text-center"> Add Student </h4>
+        <hr> 
+        <form action=" {{ url_for('add_student') }} " method="POST">
+            {{form.hidden_tag()}}
+
+            <div class="field input-field">
+                {{form.first_name.label()}}
+                {% if form.first_name.errors %}
+                {{form.first_name(class='is-invalid', placeholder='First Name')}}
+
+                <div class="invalid-feedback">
+                    {% for error in form.first_name.errors%}
+                    <span class="form-error"> {{error}} </span>
+                    {%endfor%}
+                </div>
+                {% else %}
+                
+                {{form.first_name(type='text', class='input', placeholder='First Name')}}
+
+                {%endif%}
+            </div>
+            
+            <div class="field input-field">
+                {{form.second_name.label()}}
+                {% if form.second_name.errors %}
+                {{form.second_name(class='is-invalid', placeholder='Second Name')}}
+                <div class="invalid-feedback">
+                    {% for error in form.second_name.errors%}
+                    <span class="form-error"> {{error}} </span>
+                    {%endfor%}
+                </div>
+                {% else %}
+                {{form.second_name(type='second_name', class='input', placeholder='Second Name')}}
+                {% endif %}
+            </div>
+
+          
+            <div class="field input-field">
+                {{form.fee_paid.label()}}
+                {{form.fee_paid}}
+            </div>
+
+            <div class="field input-field">
+                {{form.fee_total.label()}}
+                {{form.fee_total}}
+            </div>
+
+
+            <div class="field button-field">
+              {{form.submit(class='btn')}}
+          </div>
+        </form>
+    </div>
+</section>
+
+
+
+{% endblock content %}
