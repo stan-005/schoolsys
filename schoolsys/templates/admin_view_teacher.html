@@ -1,14 +1,12 @@
-{% extends 'school/adminbase.html' %}
-
-
+{% extends 'adminbase.html' %}
 
 {% block content %}
 
 <head>
 
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" id="bootstrap-css">
+  <script src="{{url_for('static', filename='js/bootstrap.min.js')}} "></script>
+  <script src=" {{url_for('static', filename='js/jquery-1.11.1.min.js')}}"></script>
 
   <style media="screen">
     a:link {
@@ -20,6 +18,10 @@
     .row{
       margin:100px;
     }
+    .narrow-cell {
+    width: 250px;
+  }
+
   </style>
 
 </head>
@@ -44,35 +46,28 @@ written By : sumit kumar
             <thead>
 
                 <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Salary</th>
-                    <th>Joining Date</th>
+                    <th>First Name</th>
+                    <th>Second Name</th>
+                    <th>Joined Date</th>
                     <th>Actions</th>
 
                 </tr>
             </thead>
-            {% for t in teachers %}
+            {% for teacher in teachers %}
               <tr>
-                  <td> {{t.get_name}}</td>
-                  <td>{{t.mobile}}</td>
-                  <td>${{t.salary}}</td>
-                  <td>{{t.joindate}}</td>
-                  <td><a class="btn btn-primary btn-xs" href="{% url 'update-teacher' t.id  %}"  ><span class="glyphicon glyphicon-edit"></span></a>
-                  <a class="btn btn-danger btn-xs" href="{% url 'delete-teacher-from-school' t.id  %}"  ><span class="glyphicon glyphicon-trash"></span></a></td>
+                  <td> {{teacher.first_name}}</td>
+                  <td>{{teacher.second_name}}</td>
+                  <td class="narrow-cell">{{teacher.joined_date }}</td>
+                  <td class="narrow-cell">
+                    <a href=" {{url_for('individual_teacher', teachers_id=teacher.id)}}"><button type="submit" class="btn btn-info ">View</button></a>
+                    <a href=" "><button type="button" class="btn btn-danger" >Delete</button></a>
 
+                  </td>
               </tr>
-
             {% endfor %}
 					</table>
 				</div>
-
-
 				</div>
 			</div>
-
-
-
-
 
 {% endblock content %}

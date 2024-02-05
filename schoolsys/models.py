@@ -4,7 +4,7 @@ from schoolsys import db
 class Students(db.Model):
     __tablename__ = "students"
     id          = db.Column(db.Integer, primary_key=True)
-    first_name  = db.Column(db.String(100), unique=True, index=True)
+    first_name  = db.Column(db.String(100), unique=False, index=True)
     second_name = db.Column(db.String(100), unique=False, index=True)
     fee_paid    = db.Column(db.Numeric(10, 2), nullable=False, default=0)
     fee_total   = db.Column(db.Numeric(10,2), nullable=False)
@@ -19,3 +19,10 @@ class Fees(db.Model):
    
     def __repr__(self):
         return f"Fee('{self.fee_total}')"
+
+class Teachers(db.Model):
+    __tablename__ = 'teachers'
+    id            = db.Column(db.Integer, primary_key=True)
+    first_name    = db.Column(db.String(100), unique=False, index=True)
+    second_name   = db.Column(db.String(100), unique=False, index=True)
+    joined_date   = db.Column(db.DateTime, default=datetime.utcnow)
