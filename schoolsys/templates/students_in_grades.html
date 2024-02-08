@@ -1,0 +1,31 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+{%if grades%}
+    <h1>Students in  {{ grades.levels }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Second Name</th>
+                <th>Fee Paid</th>
+                <th>Fee Total</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.first_name }}</td>
+                    <td>{{ student.second_name }}</td>
+                    <td>{{ student.fee_paid }}</td>
+                    <td>{{ student.fee_total }}</td>
+                    <td>{{ student.fee_total - student.fee_paid }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No students found for the selected grade.</p>
+    {% endif %}
+{% endblock %}

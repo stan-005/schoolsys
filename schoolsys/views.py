@@ -1,14 +1,19 @@
 from flask import render_template, url_for, redirect, flash, request
 from decimal import Decimal
 from schoolsys import app, db
-from schoolsys.models import Students, Fees, Teachers
+from schoolsys.models import Students, Fees, Teachers, Grades
 from schoolsys.forms import (StudentForm, SearchForm, TeacherUpdateForm,
-                            StudentUpdateForm, TeacherForm)
+                            StudentUpdateForm, TeacherForm, GradesForm)
 
 #Index
 @app.route('/')
 def home():
-    return render_template('admin_dashboard.html')
+    teachers = Teachers.query.all()
+    students = Students.query.all()
+    total_teachers = len(teachers)
+    total_students = len(students)
+    return render_template('admin_dashboard.html', 
+                            total_students=total_students, total_teachers=total_teachers)
 
 @app.route('/admin-student')
 def admin_student():
@@ -17,16 +22,19 @@ def admin_student():
 @app.route('/students/add', methods=['GET','POST'])
 def add_student():
     form    = StudentForm()
-    if form.validate():
+    form.grade.choices = [(grade.id, grade.levels) for grade in Grades.query.all()]
+    if form.validate_on_submit():
         try:
             student = Students(
                 first_name  = form.first_name.data,
                 second_name = form.second_name.data,
                 fee_paid    = None if form.fee_paid.data == 0 else form.fee_paid.data,
-                fee_total   = None if form.fee_total.data == 0 else form.fee_total.data
+                fee_total   = None if form.fee_total.data == 0 else form.fee_total.data,
+                grade_id    = form.grade.data
             )
             db.session.add(student)
             db.session.commit()
+            return redirect(url_for('student_list'))
         except:
             db.session.rollback()
         finally:
@@ -59,7 +67,7 @@ def student_detail(student_id):
 def update_student(student_id):
     form = StudentUpdateForm()
     student = Students.query.get_or_404(student_id)
-    if form.validate():
+    if form.validate_on_submit():
         try:
             fee_paid_decimal = form.fee_paid.data or Decimal(0)
             fee_total_decimal = form.fee_total.data or Decimal(0)
@@ -94,7 +102,8 @@ def delete_student(student_id):
         return redirect(url_for('student_list'))
     return render_template('admin_view_student.html', student=student)
 
-# TEACHERS SECTION
+
+#### TEACHERS SECTION
 @app.route('/admin-teacher')
 def admin_teacher():
     return render_template('admin_teacher.html')
@@ -103,7 +112,7 @@ def admin_teacher():
 @app.route('/teacher', methods=['GET', 'POST'])
 def add_teacher():
     form = TeacherForm()
-    if form.validate():
+    if form.validate_on_submit():
         try:
             teacher = Teachers(
                 first_name = form.first_name.data,
@@ -144,7 +153,7 @@ def individual_teacher(teachers_id):
 def update_teacher(teacher_id):
     form = TeacherUpdateForm()
     teacher = Teachers.query.get_or_404(teacher_id)
-    if form.validate():
+    if form.validate_on_submit():
         try:
             teacher.first_name = form.first_name.data,
             teacher.second_name = form.second_name.data
@@ -158,4 +167,66 @@ def update_teacher(teacher_id):
     
     return render_template('admin_update_teacher.html', teacher=teacher, form=form)
 
+#Delete Teacher
+@app.route('/delete/<int:teacher_id>', methods=['GET', 'POST'])
+def delete_teacher(teacher_id):
+    try:
+        teacher = Students.query.get_or_404(teacher_id)
+        db.session.delete(teacher)
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+        return redirect(url_for('student_list'))
+    return render_template('admin_view_teacher.html', teacher=teacher)
 
+#GET STUDENTS WITH FEE BALANCE
+@app.route('/students/fee_balance', methods=['GET', 'POST'])
+def fee_balance_list():
+    students = Students.query.all()
+    return render_template('students_fee_balance.html', students=students)
+
+# GET THE FEE PAGE
+# @app.route('/admin/fee', methods=['GET', 'POST'])
+# def vie_fee_page():
+#     return render_template('admin_fee.html')
+
+# GRADES
+@app.route('/grades', methods=['GET','POST'])
+def get_grades():
+    grades = Grades.query.all()
+    return render_template('grades.html', grades=grades)
+
+# ADD NEW GRAAAAAAADE
+@app.route('/new_grade', methods=['GET', 'POST'])
+def new_grade():
+    form = GradesForm()
+    if form.validate_on_submit():
+        try:
+            grade = Grades(
+                name = form.name.data,
+                levels = form.levels.data
+            )
+            db.session.add(grade)
+            db.session.commit()
+            return redirect(url_for('get_grades'))
+        except:
+            db.session.rollback()
+        finally:
+            db.session.close()
+    return render_template('admin_add_grade.html', form=form)
+
+# VIEW ALL GRADES IN SCHOOL
+@app.route('/grade_list', methods=['GET', 'POST'])
+def grade_list():
+    grades = Grades.query.all()
+    return render_template('admin_view_grades.html', grades=grades)
+
+# SPECIFIC STUDENTS IN EACH GRADE
+@app.route('/grades/<grade_name>', methods=['GET', 'POST'])
+def students_in_each_grade(grade_name):
+    grades = Grades.query.filter_by(name=grade_name).first()
+    if grades:
+        students = grades.students
+    return render_template('students_in_grades.html', grades=grades, students=students)
