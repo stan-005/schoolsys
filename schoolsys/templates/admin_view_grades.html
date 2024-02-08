@@ -1,0 +1,87 @@
+{% extends 'adminbase.html' %}
+
+
+
+{% block content %}
+
+<head>
+
+  <link href=" {{url_for('static', filename='css/bootstrap.min.css')}} " rel="stylesheet" id="bootstrap-css">
+  <script src=" {{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/jquery-1.11.1.min.js') }} "></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: left;
+    }
+
+    .row {
+      margin: 50px;
+    }
+
+    .panel{
+      border: none;
+    }
+    .panel p{
+      font-family: sans-serif;
+    }
+    .panel-title{
+      font-family: sans-serif;
+      font-weight: 600;
+    }
+    .table-heading{
+      padding-right: 5px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between
+    }
+   
+    .table-heading input{
+      height: 100%;
+      border-radius: 6px;
+    }
+    .narrow-cell {
+    width: 250px;
+  }
+
+  </style>
+
+</head>
+
+
+<div class="container-table">
+  <div class="row">
+    <div class="panel panel-primary">
+      <div class="table-heading">
+        <h6 class="panel-title">Grades</h6>
+      </div>
+
+      <div class="input-heading">
+        <p>Manage the Grades and their data</p>
+      </div>
+      
+        <table class="table table-hover table-striped table-bordered" id="dev-table">
+        <thead>
+
+          <tr>
+            <th>Name</th>
+            <th>Level</th>
+          </tr>
+        </thead>
+        {% for grade in grades %}
+        <tr>
+          <td> {{grade.name}}</td>
+          <td>{{grade.levels}}</td>
+        </tr>
+        
+        {% endfor %}  
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
