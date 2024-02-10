@@ -3,13 +3,18 @@
 
 <head>
   <meta charset="utf-8">
-
-
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src=" {{url_for('static', filename='js/jquery.min.js')}}"></script>
-  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
-
-  <style type="text/css">
+  <link href=" {{url_for('static', filename='css/bootstrap.min.css')}} " rel="stylesheet" id="bootstrap-css">
+  <script src=" {{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/jquery-1.11.1.min.js') }} "></script>
+  
+  <style media="screen">
+   .footer-nav {
+    left: 250px;
+   }
+   .copyright{
+    margin-right: 50px;
+   }
     a:link {
       text-decoration: none;
     }
@@ -64,6 +69,8 @@
     .f-right {
       float: right;
     }
+
+ 
   </style>
 </head>
 
@@ -110,7 +117,7 @@
 
       
     </div>
-    <br><br><br><br>
+    <br><br>
     
     <div class="row">
       {%for grade in grades%}
@@ -133,10 +140,9 @@
 </div>
 
   <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
-  <script type="text/javascript">
-
-  </script>
+  <script type="text/javascript"></script>
+{% endblock content %}
 </body>
 
 
-{% endblock content %}
+

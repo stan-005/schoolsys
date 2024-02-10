@@ -6,7 +6,7 @@ from wtforms.validators import (DataRequired, Email,
 class StudentForm(FlaskForm):
     first_name    = StringField('First Name',  validators=[DataRequired(), Length(min=2, max=20)])
     second_name   = StringField('Second Name', validators=[DataRequired(), Length(min=2, max=20)])
-    grade = SelectField('Grade', coerce=int, validators=[DataRequired()])
+    grade         = SelectField('Grade', coerce=int, validators=[DataRequired()])
     fee_paid      = DecimalField('Fee Paid', default=0)
     fee_total     = DecimalField('Fee Total', validators=[DataRequired()])
     submit        = SubmitField()
@@ -17,6 +17,7 @@ class SearchForm(FlaskForm):
 class StudentUpdateForm(FlaskForm):
     first_name    = StringField('First Name',  validators=[DataRequired(), Length(min=2, max=20)])
     second_name   = StringField('Second Name', validators=[DataRequired(), Length(min=2, max=20)])
+    grade         = SelectField('Grade', coerce=int, validators=[DataRequired()])
     fee_paid      = DecimalField('Fee Paid', default=0)
     fee_total     = DecimalField('Fee Total', validators=[DataRequired()])
     submit        = SubmitField()

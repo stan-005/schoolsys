@@ -86,6 +86,7 @@ def student_detail(student_id):
 @app.route('/students/<int:student_id>/update', methods=['GET','POST'])
 def update_student(student_id):
     form = StudentUpdateForm()
+    form.grade.choices = [(grade.id, grade.levels) for grade in Grades.query.all()]
     student = Students.query.get_or_404(student_id)
     if form.validate_on_submit():
         try:
@@ -95,6 +96,7 @@ def update_student(student_id):
             student.second_name = form.second_name.data
             student.fee_paid    += fee_paid_decimal
             student.fee_total    = fee_total_decimal
+            student.grade_id     = form.grade.data
             db.session.commit()
             return redirect(url_for('student_list'))
         except:
@@ -105,6 +107,7 @@ def update_student(student_id):
         form.second_name.data = student.second_name
         form.fee_paid.data = student.fee_paid
         form.fee_total.data= student.fee_total
+        form.grade.data = student.grade_id
     return render_template('admin_update_student.html',student=student, form=form)
 
 # #Delete Students
@@ -247,15 +250,35 @@ def grade_list():
 # SPECIFIC STUDENTS IN EACH GRADE
 @app.route('/grades/<grade_ids>', methods=['GET', 'POST'])
 def students_in_each_grade(grade_ids):
+    form = SearchForm()   
     grades = Grades.query.filter_by(levels=grade_ids).first()
     if grades:
         students = grades.students
+        query = request.args.get('query', default='', type=str)
+        if query:
+            students = Students.query.filter(
+            (Students.first_name.ilike(f'%{query}%')) |
+            (Students.second_name.ilike(f'%{query}%'))
+        ).all()
+
     else:
         students = []
-    return render_template('students_in_grades.html', grades=grades, students=students)
+    return render_template('students_in_grades.html', grades=grades, students=students, form=form, query=query)
 
-
-
+# STUDENTS IN SPECIFIC GRADES WITH FEE BALANCE
+@app.route('/fee_balance/<grade_id>', methods=['GET'])
+def fee_balance_in_grade(grade_id):
+    form = SearchForm() 
+    grade = Grades.query.get_or_404(grade_id)
+    if grade:
+        students = Students.query.filter_by(grade_id=grade.id).all()
+        students_with_balance = []
+        for student in students:
+            if student.fee_paid < student.fee_total:
+                balance = student.fee_total - student.fee_paid
+                students_with_balance.append((student, balance))
+        return render_template('admin_view_student_fee_balance_in_grade.html', grade=grade, 
+                                students_with_balance=students_with_balance, form=form)
 # FEE SECTION ---------------------------------------------------------
 
 @app.route('/fee')
