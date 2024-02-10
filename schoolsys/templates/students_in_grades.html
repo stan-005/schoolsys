@@ -25,7 +25,10 @@
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
+    {% if not students %}
         <p>No students found for the selected grade.</p>
     {% endif %}
+    {% else %}
+    <p>No students found for the selected grade.</p>
+{% endif %}
 {% endblock %}

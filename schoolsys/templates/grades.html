@@ -117,7 +117,7 @@
     <div class="col-md-4 col-xl-3">
       <div class="card bg-c-pink order-card">
         <div class="card-block">
-          <a href=" {{url_for('students_in_each_grade', grade_name=grade.name)}} ">
+          <a href=" {{url_for('students_in_each_grade', grade_ids=grade.levels)}} ">
             <h6 class="m-b-20">{{grade.levels}}</h6>
           </a>
           <br>
@@ -131,13 +131,6 @@
 
   </div>
 </div>
-
-
-
-
-  <!--
-written By : sumit kumar
--->
 
   <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
   <script type="text/javascript">

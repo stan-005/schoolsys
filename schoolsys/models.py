@@ -17,6 +17,8 @@ class Fees(db.Model):
     __tablename__ = 'fees'
     id          = db.Column(db.Integer, primary_key=True)
     fee_total   = db.Column(db.Numeric(10, 2), nullable=False)
+    grade_id = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)
+    grade = db.relationship('Grades', backref='fees', lazy=True)
    
     def __repr__(self):
         return f"Fee('{self.fee_total}')"
@@ -37,4 +39,10 @@ class Grades(db.Model):
 
     def count_students(self):
         return len(self.students)
-    
+
+    def get_fee(self):
+        grade_fee = Fees.query.filter_by(grade_id=self.id).first()
+        if grade_fee:
+            return grade_fee.fee_total
+        else:
+            return 0 
