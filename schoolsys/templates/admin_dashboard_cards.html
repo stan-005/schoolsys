@@ -58,42 +58,22 @@
     </div>
 
     <div class="row">
+      {% for grade_data in grades_data%}
       <div class="col-md-4 col-xl-3">
-        <div class="card bg-c-blue order-card">
+        <div class="card bg-c-pink order-card">
           <div class="card-block">
-            <h6 class="m-b-20">Pending Teacher</h6>
-            <h2 class="text-right"><i class="fas fa-spinner f-left"></i><span class="f-right">{{pendingteachercount}}</span></h2>
+            <h4>{{grade_data.grade.levels }}</h4>
+            <h6 class="m-b-20"> Number of Students: <b>{{grade_data.total_students}}</b></h6>
+           
+            <h6> Total Fee expected: {{grade_data.total_fee_expected}} </h6>
+            <h6>Fee Paid: {{grade_data.total_fee_paid}}</h6>
+            <h6>Fee Balance: {{grade_data.total_fee_expected-grade_data.total_fee_paid}}</h6>
+            
             <!-- <p class="m-b-0">Pending Teacher</p> -->
           </div>
         </div>
       </div>
-
-      <div class="col-md-4 col-xl-3">
-        <div class="card bg-c-green order-card">
-          <div class="card-block">
-            <h6 class="m-b-20">Pending Admissions</h6>
-            <h2 class="text-right"><i class="fas fa-spinner f-left"></i><span class="f-right">{{pendingstudentcount}}</span></h2>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-xl-3">
-        <div class="card bg-c-yellow order-card">
-          <div class="card-block">
-            <h6 class="m-b-20">Pending Salary</h6>
-            <h2 class="text-right"><i class="fas fa-spinner f-left"></i><span class="f-right">{{pendingteachersalary}}</span></h2>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-xl-3">
-        <div class="card bg-c-pink order-card">
-          <div class="card-block">
-            <h6 class="m-b-20">Pending Dues</h6>
-            <h2 class="text-right"><i class="fas fa-spinner f-left"></i><span class="f-right">{{pendingstudentfee}}</span></h2>
-          </div>
-        </div>
-      </div>
+      {%endfor%}
     </div>
   </div>
 

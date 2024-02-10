@@ -1,0 +1,85 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admit A New Student</title>
+  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+  <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #343a40, #607d8b);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      margin-bottom: 10px;
+      width: 80%;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1rem;
+      padding: 1%;
+      width: 25%;
+      cursor: pointer;
+      background: #4caf50;
+      color: #fff;
+      align-items: center;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    
+  </style>
+</head>
+<body>
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <p>Add Fee Dtails</p>
+      </div>
+
+      <div class="form-content">
+        <form action="{{ url_for('add_fee') }}" method="post">
+          {{ form.hidden_tag() }}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.grade_level.label }}</label>
+                {{ form.grade_level(class="form-control") }}
+              </div>
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.fee_total.label }}</label>
+                {{ form.fee_total(class="form-control") }}
+              </div>
+              <div class="form-group">
+                {{ form.submit(type='submit', class='btnSubmit') }}
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}
