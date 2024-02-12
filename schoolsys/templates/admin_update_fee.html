@@ -48,58 +48,29 @@
     label {
       font-weight: bold;
     }
+
+    
   </style>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      // When a grade is selected, fetch and populate the fee_total field
-      $('#grade').change(function(){
-        var gradeId = $(this).val();
-        $.ajax({
-          type: 'GET',
-          url: '/get_grade_fee/' + gradeId,
-          success: function(data) {
-            $('#fee_total').val(data);
-          },
-          error: function(xhr, status, error) {
-            console.error('Error fetching grade fee:', error);
-          }
-        });
-      });
-    });
-  </script>
 </head>
 <body>
   <div class="container register-form">
     <div class="form">
       <div class="note">
-        <p>Admit A New Student</p>
+        <p>Update Fee Details</p>
       </div>
 
       <div class="form-content">
-        <form action="{{ url_for('add_student') }}" method="post">
+        <form action="{{ url_for('update_fee', fee_id=fee_id) }}" method="POST">
           {{ form.hidden_tag() }}
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <label style="font-weight: bold;">{{ form.first_name.label }}</label>
-                {{ form.first_name(class="form-control", placeholder="First Name") }}
-              </div>
-              <div class="form-group">
-                <label style="font-weight: bold;">{{ form.second_name.label }}</label>
-                {{ form.second_name(class="form-control", placeholder="Second Name") }}
-              </div>
-              <div class="form-group">
-                <label style="font-weight: bold;">{{ form.grade.label }}</label>
-                {{ form.grade(class="form-control", placeholder="Grade") }}
-              </div>
-              
-              <div class="form-group">
-                <label style="font-weight: bold;">{{ form.fee_paid.label }}</label>
-                {{ form.fee_paid(class="form-control", placeholder="Fee Paid") }}
+                <label style="font-weight: bold;">{{ form.grade_level.label }}</label>
+                {{ form.grade_level(class="form-control") }}
               </div>
               <div class="form-group">
                 <label style="font-weight: bold;">{{ form.fee_total.label }}</label>
-                {{ form.fee_total(class="form-control", placeholder="Total Fee", id="fee_total") }}
+                {{ form.fee_total(class="form-control") }}
               </div>
               <div class="form-group">
                 {{ form.submit(type='submit', class='btnSubmit') }}

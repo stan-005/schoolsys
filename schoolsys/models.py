@@ -10,6 +10,11 @@ class Students(db.Model):
     fee_total   = db.Column(db.Numeric(10,2), nullable=False)
     grade_id    = db.Column(db.Integer, db.ForeignKey('grade.id'), nullable=False)
 
+    @property
+    def calculate_fee_total(self):
+        grade_fee = Grades.query.filter_by(id=self.grade_id).first().get_fee()
+        return grade_fee
+
     def __repr__(self):
         return f" Students('{self.first_name}', '{self.second_name}', '{self.email}') "
 

@@ -1,10 +1,10 @@
-from flask import render_template, url_for, redirect, flash, request
+from flask import render_template, url_for, redirect, flash, request, jsonify
 from decimal import Decimal
 from schoolsys import app, db
 from schoolsys.models import Students, Fees, Teachers, Grades
 from schoolsys.forms import (StudentForm, SearchForm, TeacherUpdateForm,
                             StudentUpdateForm, TeacherForm, GradesForm,
-                            FeeForm)
+                            FeeForm, FeeUpdateForm)
 
 
 # STUDENTS SECTION---------------------------------------------------------------------------------------
@@ -38,11 +38,24 @@ def home():
 @app.route('/admin-student')
 def admin_student():
     return render_template('admin_student.html')
+
+#AJAX ROUTE TO POPULATE THE FEE_TOTAL FIELD WITH THE FEE WHEN GRADE IS SELECTED
+@app.route('/get_grade_fee/<int:grade_id>')
+def get_grade_fee(grade_id):
+    grade_fee = Grades.query.get(grade_id).get_fee()
+    return jsonify(grade_fee)
 # #Add student
 @app.route('/students/add', methods=['GET','POST'])
 def add_student():
     form    = StudentForm()
     form.grade.choices = [(grade.id, grade.levels) for grade in Grades.query.all()]
+
+    # Automatically populate fee_total based on selected grade
+    if form.grade.data:
+        grade_id = form.grade.data
+        grade_fee = Grades.query.get(grade_id).get_fee()
+        form.fee_total.data = grade_fee
+
     if form.validate_on_submit():
         try:
             student = Students(
@@ -88,6 +101,13 @@ def update_student(student_id):
     form = StudentUpdateForm()
     form.grade.choices = [(grade.id, grade.levels) for grade in Grades.query.all()]
     student = Students.query.get_or_404(student_id)
+
+    # Automatically populate fee_total based on selected grade
+    if form.grade.data:
+        grade_id = form.grade.data
+        grade_fee = Grades.query.get(grade_id).get_fee()
+        form.fee_total.data = grade_fee
+
     if form.validate_on_submit():
         try:
             fee_paid_decimal = form.fee_paid.data or Decimal(0)
@@ -108,7 +128,7 @@ def update_student(student_id):
         form.fee_paid.data = student.fee_paid
         form.fee_total.data= student.fee_total
         form.grade.data = student.grade_id
-    return render_template('admin_update_student.html',student=student, form=form)
+    return render_template('admin_update_student.html',student=student, form=form, student_id=student_id)
 
 # #Delete Students
 @app.route('/delete/<int:student_id>', methods=['GET', 'POST'])
@@ -201,7 +221,7 @@ def delete_teacher(teacher_id):
         db.session.rollback()
     finally:
         db.session.close()
-        return redirect(url_for('student_list'))
+        return redirect(url_for('teacher_list'))
     return render_template('admin_view_teacher.html', teacher=teacher)
 
 #GET STUDENTS WITH FEE BALANCE
@@ -247,20 +267,33 @@ def grade_list():
     grades = Grades.query.all()
     return render_template('admin_view_grades.html', grades=grades)
 
+# DELETE GRADES
+@app.route('/delete_grade/<int:grade_id>', methods=['GET', 'POST'])
+def delete_grade(grade_id):
+    try:
+        grade = Grades.query.get_or_404(grade_id)
+        db.session.delete(grade)
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+        return redirect(url_for('grade_list'))
+    return render_template('admin_view_grades.html', grade=grade)
+
 # SPECIFIC STUDENTS IN EACH GRADE
 @app.route('/grades/<grade_ids>', methods=['GET', 'POST'])
 def students_in_each_grade(grade_ids):
     form = SearchForm()   
     grades = Grades.query.filter_by(levels=grade_ids).first()
+    query = request.args.get('query', default='', type=str)
     if grades:
         students = grades.students
-        query = request.args.get('query', default='', type=str)
         if query:
             students = Students.query.filter(
             (Students.first_name.ilike(f'%{query}%')) |
             (Students.second_name.ilike(f'%{query}%'))
         ).all()
-
     else:
         students = []
     return render_template('students_in_grades.html', grades=grades, students=students, form=form, query=query)
@@ -285,6 +318,11 @@ def fee_balance_in_grade(grade_id):
 def fee_page():
     return render_template('admin_view_fee.html')
 
+@app.route('/fee_table')
+def fee_table():
+    fee= db.session.query(Fees, Grades.levels).join(Grades, Fees.grade_id == Grades.id).all()
+    return render_template('admin_fee_table.html', fee=fee)
+
 #add fee
 @app.route('/add_fee', methods=['GET', 'POST'])
 def add_fee():
@@ -308,23 +346,20 @@ def add_fee():
     return render_template('admin_add_fee.html', form=form)
 
 #UPDATE FEE
-@app.route('/update/<int:fee_id>')
+@app.route('/update/<int:fee_id>', methods=['GET', 'POST'])
 def update_fee(fee_id):
-    form = FeeForm()
-    fee = Fees.query.get_or_404(fee_id)
+    form = FeeUpdateForm()
     form.grade_level.choices = [(grade.id, grade.levels) for grade in Grades.query.all()]
+    fee = Fees.query.get_or_404(fee_id)
 
     if form.validate_on_submit():
-        grade_id = form.grade_level.data
-        fee_total = form.fee_total.data
+        fee.fee_total = form.fee_total.data,
+        fee.grade_id = form.grade_level.data
+        db.session.commit()
+        return redirect(url_for('fee_table'))
+    
+    form.fee_total.data = fee.fee_total
+    form.grade_level.data = fee.grade_id
 
-        fee_entry = Fees.query.filter_by(grade_id=grade_id).first()
-        if fee_entry:
-            fee_entry.fee_total = fee_total
-        else:
-            fee_entry = Fees(grade_id=grade_id, fee_total=fee_total)
-            db.session.commit()
+    return render_template('admin_update_fee.html', form=form, fee_id=fee_id)
 
-        return redirect(url_for('home'))
-
-    return render_template('admin_add_fee.html', form=form)

@@ -46,3 +46,8 @@ class FeeForm(FlaskForm):
     fee_total = DecimalField('Fee Total', validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Submit')
     
+class FeeUpdateForm(FlaskForm):
+    grade_level = SelectField('Grade Level', validators=[DataRequired()], choices=[], coerce=int)
+    fee_total = DecimalField('Fee Total', validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField('Submit')
+    
