@@ -109,7 +109,7 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                      <form action="{{ url_for('delete_student', student_id=student.id) }}" method="student">
+                      <form action="{{ url_for('delete_student', student_id=student.id) }}" method="POST">
                           
                           <button type="submit" class="btn btn-danger">Delete</button>
                       </form>

@@ -1,14 +1,14 @@
 {% extends 'adminbase.html' %}
 {%block content%}
 
-{%for students, fees in student%}
-
 <section id="students" class="section-spacing">
+ 
   <div class="student-details-header">
-    <h2> Details About: {{students.first_name}} {{students.second_name}}</h2>
+    <h2> Details About: {{student.first_name}} {{student.second_name}}</h2>
   </div>
   
   <div class="container-card">
+    {%for students, fees in student%}
     <div class="student-card">
       <div class="card-content">
       <h5 class="text-center">{{students.first_name}}  {{students.second_name}}</h5>
@@ -25,9 +25,8 @@
         </div>
       </div>
     </div>
+    {%endfor%}
   </div>
-    
-</section>
-{%endfor%}
 
+</section>
 {%endblock content%}
