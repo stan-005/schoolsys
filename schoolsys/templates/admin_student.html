@@ -6,8 +6,8 @@
 
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+  <script src=" {{url_for('static', filename='js/jquery.min.js')}}"></script>
+  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
 
   <style type="text/css">
     a:link {
@@ -92,18 +92,6 @@
             </a>
             <br>
             <h2 class="text-right"><i class="fas fa-plus-circle f-left"></i></h2>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-xl-3">
-        <div class="card bg-c-yellow order-card">
-          <div class="card-block">
-            <a href="/admin-approve-student">
-              <h6 class="m-b-20">Approve Student</h6>
-            </a>
-            <br>
-            <h2 class="text-right"><i class="fas fa-check-circle f-left"></i></h2>
           </div>
         </div>
       </div>

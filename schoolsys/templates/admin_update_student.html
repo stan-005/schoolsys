@@ -2,7 +2,13 @@
 {% block content %}
 
 <head>
-  <style media="screen">
+  
+
+  <link href=" {{url_for('static', filename='css/bootstrap.min.css')}} " rel="stylesheet" id="bootstrap-css">
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+ 
+ <style media="screen">
     a:link {
       text-decoration: none;
     }
@@ -19,11 +25,14 @@
     .form-content {
       padding: 5%;
       border: 1px solid #ced4da;
-      margin-bottom: 2%;
+      padding: 20px;
     }
 
     .form-control {
-      border-radius: 1.5rem;
+      border-radius: 10px;
+    }
+    .form-group{
+      border-radius: 10px;
     }
 
     .btnSubmit {
@@ -34,18 +43,34 @@
       cursor: pointer;
       background: #4caf50;
       color: #fff;
+      margin: 20px 0px;
     }
-  </style>
-
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+    label{
+      font-weight: 500;
+      padding: 10px 0px;
+    }
+    </style>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        // When a grade is selected, fetch and populate the fee_total field
+        $('#grade').change(function(){
+          var gradeId = $(this).val();
+          $.ajax({
+            type: 'GET',
+            url: '/get_grade_fee/' + gradeId,
+            success: function(data) {
+              $('#fee_total').val(data);
+            },
+            error: function(xhr, status, error) {
+              console.error('Error fetching grade fee:', error);
+            }
+          });
+        });
+      });
+    </script>
 </head>
 
 <!------ student update page by admin(sumit)  ---------->
-<form method="post">
-  {{form.hidden_tag()}}
 
   <div class="container register-form">
     <div class="form">
@@ -57,16 +82,26 @@
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
-              {{ form.first_name (class="form-control", placeholder="First Name" )}}
+              <form method="POST" action="{{url_for('update_student', student_id=student_id)}}">
+                {{form.hidden_tag()}}
+              {{form.first_name.label()}}
+              {{ form.first_name (class="form-control")}}
             </div>
             <div class="form-group">
-              {{form.second_name(class="form-control", placeholder="Second Name") }}
+              {{form.second_name.label()}}
+              {{form.second_name(class="form-control") }}
             </div>
             <div class="form-group">
+              {{form.grade.label()}}
+              {{form.grade(class="form-control") }}
+            </div>
+            <div class="form-group">
+              {{form.fee_paid.label()}}
               {{form.fee_paid(class="form-control")}}
             </div>
             <div class="form-group">
-              {{form.fee_total(class="form-control")}}
+              {{form.fee_total.label()}}
+              {{form.fee_total(class="form-control", id="fee_total")}}
             </div>
           </div>
         </div>

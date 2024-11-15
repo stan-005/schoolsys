@@ -1,103 +1,114 @@
 {% extends 'adminbase.html' %}
 
 {% block content %}
-
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admit A New Student</title>
+  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+  <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+  <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function() {
-        $('#searchForm').submit(function(event) {
-            event.preventDefault();
-            var query = $('#query').val().trim();
-            $.ajax({
-                type: 'POST',
-                url: '/search',
-                contentType: 'application/json',
-                data: JSON.stringify({ query: query }),
-                success: function(response) {
-                    $('#resultsTable tbody').empty();
-                    $.each(response, function(index, student) {
-                        var row = $('<tr>').appendTo('#resultsTable tbody');
-                        $('<td>').text(student.first_name).appendTo(row);
-                        $('<td>').text(student.second_name).appendTo(row);
-                        $('<td>').text(student.fee_paid).appendTo(row);
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #343a40, #607d8b);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      margin-bottom: 10px;
+      width: 80%;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1rem;
+      padding: 1%;
+      width: 25%;
+      cursor: pointer;
+      background: #4caf50;
+      color: #fff;
+      align-items: center;
+    }
+
+    label {
+      font-weight: bold;
+    }
+  </style>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      // When a grade is selected, fetch and populate the fee_total field
+      $('#grade').change(function(){
+        var gradeId = $(this).val();
+        $.ajax({
+          type: 'GET',
+          url: '/get_grade_fee/' + gradeId,
+          success: function(data) {
+            $('#fee_total').val(data);
+          },
+          error: function(xhr, status, error) {
+            console.error('Error fetching grade fee:', error);
+          }
         });
+      });
     });
-</script>
-
+  </script>
 </head>
+<body>
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <p>Admit A New Student</p>
+      </div>
 
-
-
-<!------ signup page for student by admin(sumit)  ---------->
-<section class="container-add-student forms">
-
-  <!---REGISTER FORM-->
-  <div class="form add-student">
-        <h4 class="add-header text-center"> Add Student </h4>
-        <hr> 
-        <form action=" {{ url_for('add_student') }} " method="POST">
-            {{form.hidden_tag()}}
-
-            <div class="field input-field">
-                {{form.first_name.label()}}
-                {% if form.first_name.errors %}
-                {{form.first_name(class='is-invalid', placeholder='First Name')}}
-
-                <div class="invalid-feedback">
-                    {% for error in form.first_name.errors%}
-                    <span class="form-error"> {{error}} </span>
-                    {%endfor%}
-                </div>
-                {% else %}
-                
-                {{form.first_name(type='text', class='input', placeholder='First Name')}}
-
-                {%endif%}
+      <div class="form-content">
+        <form action="{{ url_for('add_student') }}" method="post">
+          {{ form.hidden_tag() }}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.first_name.label }}</label>
+                {{ form.first_name(class="form-control", placeholder="First Name") }}
+              </div>
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.second_name.label }}</label>
+                {{ form.second_name(class="form-control", placeholder="Second Name") }}
+              </div>
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.grade.label }}</label>
+                {{ form.grade(class="form-control", placeholder="Grade") }}
+              </div>
+              
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.fee_paid.label }}</label>
+                {{ form.fee_paid(class="form-control", placeholder="Fee Paid") }}
+              </div>
+              <div class="form-group">
+                <label style="font-weight: bold;">{{ form.fee_total.label }}</label>
+                {{ form.fee_total(class="form-control", placeholder="Total Fee", id="fee_total") }}
+              </div>
+              <div class="form-group">
+                {{ form.submit(type='submit', class='btnSubmit') }}
+              </div>
             </div>
-            
-            <div class="field input-field">
-                {{form.second_name.label()}}
-                {% if form.second_name.errors %}
-                {{form.second_name(class='is-invalid', placeholder='Second Name')}}
-                <div class="invalid-feedback">
-                    {% for error in form.second_name.errors%}
-                    <span class="form-error"> {{error}} </span>
-                    {%endfor%}
-                </div>
-                {% else %}
-                {{form.second_name(type='second_name', class='input', placeholder='Second Name')}}
-                {% endif %}
-            </div>
-
-          
-            <div class="field input-field">
-                {{form.fee_paid.label()}}
-                {{form.fee_paid}}
-            </div>
-
-            <div class="field input-field">
-                {{form.fee_total.label()}}
-                {{form.fee_total}}
-            </div>
-
-
-            <div class="field button-field">
-              {{form.submit(class='btn')}}
           </div>
         </form>
+      </div>
     </div>
-</section>
-
-
-
-{% endblock content %}
+  </div>
+</body>
+{% endblock %}

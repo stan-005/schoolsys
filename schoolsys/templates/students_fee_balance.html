@@ -1,0 +1,66 @@
+{% extends 'adminbase.html' %}
+
+{% block content %}
+
+<head>
+
+  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet" id="bootstrap-css">
+  <script src=" {{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+  <script src=" {{url_for('static', filename='js/jquery-1.11.1.min.js')}}"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+  </style>
+
+</head>
+
+
+<div class="container">
+
+  <div class="row">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h6 class="panel-title">Students</h6>
+
+      </div>
+
+      <table class="table table-hover table-striped table-bordered" id="dev-table">
+        <thead>
+
+          <tr>
+            <th>First Name</th>
+            <th>Second Name</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        {% for student in students %}
+        <tr>
+            {% if student.fee_paid < student.fee_total %}
+          <td> {{student.first_name}}</td>
+          <td>{{student.second_name}}</td>
+          <td>{{student.fee_total - student.fee_paid}}</td>
+          <td><a class="btn btn-primary btn-xs" href=""><span class="glyphicon glyphicon-edit"></span></a>
+         <a class="btn btn-danger btn-xs" href=""><span class="glyphicon glyphicon-trash"></span></a></td>
+
+        </tr>
+        {%endif%}
+        {% endfor %}
+      </table>
+    </div>
+
+
+  </div>
+</div>
+
+{% endblock content %}
