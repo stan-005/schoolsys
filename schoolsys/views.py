@@ -363,3 +363,10 @@ def update_fee(fee_id):
 
     return render_template('admin_update_fee.html', form=form, fee_id=fee_id)
 
+#ROUTE TO START THE SERVER AS AN EXECUTABLE
+@app.route('/start_server')
+def start_server():
+    def run():
+        app.run()
+    threading.Thread(target=run).start()
+    return 'Server is starting...'
