@@ -45,7 +45,7 @@ def get_grade_fee(grade_id):
     grade_fee = Grades.query.get(grade_id).get_fee()
     return jsonify(grade_fee)
 # #Add student
-@app.route('/students/add', methods=['GET','POST'])
+@app.route('/students/add', methods=['GET','POST', 'PUT'])
 def add_student():
     form    = StudentForm()
     form.grade.choices = [(grade.id, grade.levels) for grade in Grades.query.all()]
