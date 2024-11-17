@@ -16,8 +16,8 @@ jobs:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
       - name: run tests
         run: make test
-          env:
-            THIS_SECRET: ${{ secrets.THIS_SECRET }}
+        env:
+          THIS_SECRET: ${{ secrets.THIS_SECRET }}
     
     # Step 2 Setup Python Environment
       - name: Set up Python
