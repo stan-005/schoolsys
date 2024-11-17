@@ -12,6 +12,8 @@ jobs:
     # Step 1 Checkout repo code
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/merge
     
     # Step 2 Setup Python Environment
       - name: Set up Python
