@@ -3,5 +3,5 @@ all: test
 
 .PHONY: test
 test:
-	echo "$THIS_SECRET"
+	./t.sh
 	@echo 'The tests was a success!'
