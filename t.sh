@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-echo  "$THIS_SECRET" | base64
+echo  "$THIS_SECRET" | hd -c
