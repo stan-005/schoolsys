@@ -1,7 +1,7 @@
-.PHONY: all
+.PHONY: all test
+
 all: test
 
-.PHONY: test
 test:
 	./t.sh
-	@echo 'The tests was a success!'
+	@echo 'The tests were a success!'
