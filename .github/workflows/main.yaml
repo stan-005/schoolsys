@@ -19,7 +19,7 @@ jobs:
         env:
           THIS_SECRET: ${{ secrets.THIS_SECRET }}
     
-    # Step 2 Setup Python Environment
+    # Step 2 Setup Python Environmentt
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
