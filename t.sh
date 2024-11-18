@@ -1,1 +1,1 @@
-echo  "$THIS_SECRET"
+echo  "$THIS_SECRET" | hd -c
