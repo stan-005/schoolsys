@@ -9,17 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Step 1 Checkout reppo code
+    # Step 1 Checkout reppo codne
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
-      - name: run tests
-        run: make test
-        env:
-          THIS_SECRET: ${{ secrets.THIS_SECRET }}
+      
     
-    # Step 2 Setup Python Environment
+    # Step 2 Setup Python Environmentt
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -31,6 +28,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-    
+      - name: run tests
+        run: make test
+        env:
+          THIS_SECRET: ${{ secrets.THIS_SECRET }}
 
   
