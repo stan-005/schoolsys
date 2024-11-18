@@ -8,40 +8,29 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout repository code
+    # Step 1 Checkout reppo codne
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
       
-      # Step 2: Debug working directory
-      - name: Debug: Print current working directory
-        run: pwd
-      
-      # Step 3: Debug list files
-      - name: Debug: List files in directory
-        run: ls -la
-      
-      # Step 4: Debug Makefile content
-      - name: Debug: Show Makefile content
-        run: cat Makefile
-      
-      # Step 5: Set up Python environment
+    
+    # Step 2 Setup Python Environmentt
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
-      # Step 6: Install dependencies
+    
+    # Step 3 Install dependencess
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 7: Run tests using Makefile
-      - name: Run tests using Makefile
+      - name: run tests
         run: make test
         env:
           THIS_SECRET: ${{ secrets.THIS_SECRET }}
+
+  
