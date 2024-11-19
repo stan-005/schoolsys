@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout repository code
+
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -37,15 +37,6 @@ jobs:
 
   auto-merge:
     runs-on: ubuntu-latest
-    needs: build  # Ensure this job runs only after the build job is successful
-    steps:
-      # Step 1: Checkout code
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      # Step 2: Merge PR automatically
-      - name: Merge PR if conditions are met
-        if: github.event.pull_request.user.login == 'stancoder-005'  # Ensure only your student's PR is merged
         run: |
           curl -X PUT -H "Authorization: Bearer ${{ secrets.THIS_SECRET }}" \
             -d '{"commit_message": "Automated PR merge", "merge_method": "merge"}' \
