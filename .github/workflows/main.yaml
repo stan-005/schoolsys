@@ -5,7 +5,15 @@ on:
     branches:
       - main
   pull_request:
-    types: [opened, synchronize, reopened]  # Trigger for PR events
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+      - ready_for_review
+      - unlabeled
+      - labeled
+      - unlocked
 
 jobs:
   build:
@@ -35,18 +43,19 @@ jobs:
         env:
           THIS_SECRET: ${{ secrets.THIS_SECRET }}
 
-  auto-merge:
+  automerge:
     runs-on: ubuntu-latest
-    needs: build  # Ensure this job runs only after the build job is successful
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repository code
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      # Step 2: Merge PR automatically
-      - name: Merge PR if conditions are met
-        if: github.event.pull_request.user.login == 'stancoder-005'  # Ensure only your student's PR is merged
-        run: |
-          curl -X PUT -H "Authorization: Bearer ${{ secrets.THIS_SECRET }}" \
-            -d '{"commit_message": "Automated PR merge", "merge_method": "merge"}' \
-            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/merge
+      # Step 2: Automerge PR if conditions are met
+      - id: automerge
+        name: Automerge PR
+        uses: pascalgn/automerge-action@v0.16.4
+        env:
+          GITHUB_TOKEN: "${{ secrets.THIS_SECRET }}"  # Use your custom secret here
