@@ -43,19 +43,17 @@ jobs:
         env:
           THIS_SECRET: ${{ secrets.THIS_SECRET }}
 
-  automerge:
+  auto-merge:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      # Step 1: Checkout repository code
+      # Step 1: Checkout code
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Step 2: Automerge PR if conditions are met
-      - id: automerge
-        name: Automerge PR
-        uses: pascalgn/automerge-action@v0.16.4
-        env:
-          GITHUB_TOKEN: "${{ secrets.THIS_SECRET }}"  # Use your custom secret here
+      # Step 2: Merge PR if conditions are met
+      - name: Merge PR if conditions are met
+        if: github.event.pull_request.user.login == 'stancoder-005'  # Check if the PR was created by the correct user
+        run: |
+          curl -X PUT -H "Authorization: Bearer ${{ secrets.THIS_SECRET }}" \
+            -d '{"commit_message": "Automated PR merge", "merge_method": "merge"}' \
+            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/merge
