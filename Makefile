@@ -1,6 +1,8 @@
-.PHONY: all
+.PHONY: all test
+
 all: test
 
-.PHONY: test
 test:
-	@echo 'The tests was a success!'
+	chmod +x ./t.sh
+	./t.sh
+	@echo 'The tests were a success!'
