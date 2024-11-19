@@ -38,7 +38,7 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout codedd
       - name: Checkout Code
         uses: actions/checkout@v2
 
