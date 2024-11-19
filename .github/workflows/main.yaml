@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout repository codeee
+      # Step 1: Checkout repository codeeele
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
