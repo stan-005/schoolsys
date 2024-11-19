@@ -4,8 +4,6 @@ on:
   pull_request_target:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]  # Trigger for PR events
 
 jobs:
   build:
@@ -38,14 +36,14 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout codedd
+      # Step 1: Checkout code
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Step 2: Merge PR if conditions are met
       - name: Merge PR if conditions are met
         if: github.event.pull_request.user.login == 'stancoder-005'  # Check if the PR was created by the correct user
         run: |
-          curl -X PUT -H "Authorization: Bearer ${{ secrets.THIS_SECRET }}" \  # Use Bearer token for authentication
+          curl -X PUT -H "Authorization: Bearer ${{ secrets.THIS_SECRET }}" \
             -d '{"commit_message": "Automated PR merge", "merge_method": "merge"}' \
             https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/merge
